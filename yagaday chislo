@@ -1,0 +1,49 @@
+import random
+
+def generate_random():
+    return random.randint(1, 10)
+
+def generate_nickname():
+    prefixes = ["Super", "Mega", "Turbo", "Flash", "Quick", "Dark", "Bright", "Swift"]
+    suffixes = ["Guy", "Kid", "Pro", "Master", "Star", "Wolf", "Fox", "King", "Queen"]
+    return f"{random.choice(prefixes)}{random.choice(suffixes)}"
+
+def greet_player():
+    while True:
+        name = input("Как тебя зовут? (или нажми Enter для случайного ника): ").strip()
+        if name == "":
+            name = generate_nickname()
+            print(f"Твой случайный ник: {name}")
+        else:
+            print(f"Привет, {name}!")
+        return name
+
+def play_game():
+    name = greet_player()
+    number_to_guess = generate_random()
+    attempts = 0
+    print("Я загадал число от 1 до 10. Попробуй угадать!")
+    
+    while attempts < 3:
+        try:
+            guess = int(input("Твоё предположение: "))
+        except ValueError:
+            print("Пожалуйста, введи целое число.")
+            continue
+            
+        if guess == number_to_guess:
+            print(f"Поздравляю, {name}! Ты угадал!")
+            break
+        elif guess < number_to_guess:
+            print("Загаданное число больше.")
+        else:
+            print("Загаданное число меньше.")
+        attempts += 1
+    else:
+        print(f"{name}, ты не угадал. Загаданное число было {number_to_guess}")
+
+def main():
+    play_game()
+
+if __name__ == "__main__":
+    main()
