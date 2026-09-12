@@ -1,0 +1,79 @@
+import random
+import pyttsx3
+
+# Инициализация движка один раз при старте
+engine = pyttsx3.init()
+
+# Настройка голоса, скорости и громкости
+rate = engine.getProperty('rate')
+engine.setProperty('rate', 125)
+
+volume = engine.getProperty('volume')
+engine.setProperty('volume', 1.0)
+
+voices = engine.getProperty('voices')
+# Попробуй voices[0] (мужской) или voices[1] (женский) — зависит от системы
+if len(voices) > 1:
+    engine.setProperty('voice', voices[1].id)
+else:
+    engine.setProperty('voice', voices[0].id)
+
+def speak(text):
+    """Функция для озвучивания текста"""
+    print(text)          # дублируем в консоль, чтобы видеть текст
+    engine.say(text)
+    engine.runAndWait()  # ждём, пока голос дочитает фразу
+
+def generate_random():
+    return random.randint(1, 10)
+
+def generate_nickname():
+    prefixes = ["Super", "Mega", "Turbo", "Flash", "Quick", "Dark", "Bright", "Swift"]
+    suffixes = ["Guy", "Kid", "Pro", "Master", "Star", "Wolf", "Fox", "King", "Queen"]
+    return f"{random.choice(prefixes)}{random.choice(suffixes)}"
+
+def greet_player():
+    while True:
+        name_input = input("Как тебя зовут? (или нажми Enter для случайного ника): ").strip()
+        if name_input == "":
+            name = generate_nickname()
+            msg = f"Твой случайный ник: {name}"
+            speak(msg)
+        else:
+            name = name_input
+            msg = f"Привет, {name}!"
+            speak(msg)
+        return name
+
+def play_game():
+    name = greet_player()
+    number_to_guess = generate_random()
+    attempts = 0
+
+    speak("Я загадал число от 1 до 10. Попробуй угадать!")
+
+    while attempts < 3:
+        try:
+            guess_input = input("Твоё предположение: ")
+            guess = int(guess_input)
+        except ValueError:
+            speak("Пожалуйста, введи целое число.")
+            continue
+
+        if guess == number_to_guess:
+            speak(f"Поздравляю, {name}! Ты угадал!")
+            break
+        elif guess < number_to_guess:
+            speak("Загаданное число больше.")
+        else:
+            speak("Загаданное число меньше.")
+
+        attempts += 1
+    else:
+        speak(f"{name}, ты не угадал. Загаданное число было {number_to_guess}")
+
+def main():
+    play_game()
+
+if __name__ == "__main__":
+    main()
